@@ -38,7 +38,7 @@
                 <td th:text="${board.id}">번호</td>
                 <td><a href="Board.html" th:href="@{/boards/{id}(id=${board.id})}" th:text="${board.title}">제목</a></td>
                 <td th:text="${board.userId}">작성자</td>
-                <td th:text="${board.date}">등록일</td>
+                <td th:text="${#temporals.format(board.date, 'yyyy-MM-dd')}">등록일</td>
             </tr>
             </tbody>
         </table>
