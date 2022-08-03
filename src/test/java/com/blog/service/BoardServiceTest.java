@@ -2,10 +2,11 @@ package com.blog.service;
 
 import com.blog.domain.Board;
 import com.blog.dto.BoardDto;
+import com.blog.dto.BoardResponseDto;
+import com.blog.dto.BoardSaveRequestDto;
+import com.blog.dto.BoardUpdateRequestDto;
 import com.blog.repository.BoardRepository;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -14,6 +15,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+import static org.assertj.core.api.Assertions.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.*;
@@ -27,81 +29,112 @@ class BoardServiceTest {
     @Autowired
     BoardService boardService;
 
+    @BeforeEach
+    void beforeEach(){
+        BoardSaveRequestDto boardSaveDto = new BoardSaveRequestDto("테스트 제목 1", "테스트 내용 1");
+        boardService.save(boardSaveDto);
+    }
+
     @AfterEach
     void afterEach(){boardRepository.deleteAll();}
 
-
+    @DisplayName("블로그저장")
     @Test
-    void 블로그저장하기() {
-        //given
-        Board board1 = new Board("userA","제목1", "내용 1");
-
-        //when
-        boardRepository.save(board1);
+    void saveBolg() {
+        BoardSaveRequestDto boardSaveDto = new BoardSaveRequestDto("테스트 제목 2", "테스트 내용 2");
+        Long saveId = boardService.save(boardSaveDto);
 
         //then
-        Board saveBoard = boardRepository.findById(board1.getId()).get();
-        assertThat(board1).isEqualTo(saveBoard);
+        Board saveBoard = boardRepository.findById(saveId).get();
+        assertThat(boardSaveDto.getTitle()).isEqualTo(saveBoard.getTitle());
+        assertThat(boardSaveDto.getContent()).isEqualTo(saveBoard.getContent());
     }
 
-
+    @DisplayName("Board 전체 찾기")
     @Test
-    void 블로그전체Board찾기(){
+    void searchBlog(){
         //given
-        Board board1 = new Board("userA", "제목1", "내용 1");
-        Board board2 = new Board("userB","제목2", "내용 2");
-        boardRepository.save(board1);
-        boardRepository.save(board2);
+        BoardSaveRequestDto boardSaveDto1 = new BoardSaveRequestDto("테스트 제목 2", "테스트 내용 2");
+        BoardSaveRequestDto boardSaveDto2 = new BoardSaveRequestDto("테스트 제목 3", "테스트 내용 3");
+        Long saveId1 = boardService.save(boardSaveDto1);
+        Long saveId2 = boardService.save(boardSaveDto2);
 
         //when
         List<Board> boards = boardRepository.findAll();
 
         //then
-        assertThat(boards.size()).isEqualTo(2);
-        assertThat(boards).contains(board1,board2);
+        assertThat(boards.size()).isEqualTo(3);
     }
 
+    @DisplayName("Board 찾기 - 존재하지 O")
     @Test
-    void 블로그Board찾기오류(){
+    void searchBlogPresent(){
         //given
-        Board board1 = new Board("userA", "제목1", "내용 1");
-        boardRepository.save(board1);
+        BoardSaveRequestDto boardSaveDto = new BoardSaveRequestDto("테스트 제목 2", "테스트 내용 2");
+        Long saveId = boardService.save(boardSaveDto);
 
         try {
-            boardRepository.findById(3L).get();
+            BoardResponseDto findBoardDto = boardService.findById(saveId);
+            assertThat(findBoardDto.getTitle()).isEqualTo(boardSaveDto.getTitle());
+            assertThat(findBoardDto.getContent()).isEqualTo(boardSaveDto.getContent());
         }
-        catch (NoSuchElementException e){
-            Assertions.assertEquals("No value present", e.getMessage());
+
+        catch (IllegalArgumentException e){
+            Assertions.assertEquals("헤당 게시글이 없습니다. id=" + saveId, e.getMessage());
+        }
+
+    }
+
+    @DisplayName("Board 찾기 - 존재하지 X")
+    @Test
+    void searchBlogEmpty(){
+        //given
+        BoardSaveRequestDto boardSaveDto = new BoardSaveRequestDto("테스트 제목 2", "테스트 내용 2");
+        Long saveId = boardService.save(boardSaveDto);
+        Long noData = saveId + 3;
+
+        try {
+            BoardResponseDto findBoardDto = boardService.findById(saveId);
+            assertThat(findBoardDto.getTitle()).isEqualTo(boardSaveDto.getTitle());
+            assertThat(findBoardDto.getContent()).isEqualTo(boardSaveDto.getContent());
+        }
+
+        catch (IllegalArgumentException e){
+            Assertions.assertEquals("헤당 게시글이 없습니다. id=" + noData, e.getMessage());
         }
 
     }
 
 
+    @DisplayName("블로그 수정 - 성공")
     @Test
-    void 블로그수정하기() {
+    void editBlog() {
         //given
-        Board board1 = new Board("userA", "제목1", "내용 1");
-        BoardDto updateBoardDto = new BoardDto("제목2", "내용 2");
-        boardRepository.save(board1);
+        BoardSaveRequestDto boardSaveDto = new BoardSaveRequestDto("테스트 제목 2", "테스트 내용 2");
+        Long saveId = boardService.save(boardSaveDto);
+        BoardUpdateRequestDto boardUpdateDto = new BoardUpdateRequestDto("수정 제목 2", "수정 내용2");
 
         //when
-        boardService.editBoard(board1.getId(), updateBoardDto);
+        boardService.update(saveId, boardUpdateDto);
 
         //then
-        Board saveBoard =  boardRepository.findById(board1.getId()).get();
-        assertThat(updateBoardDto.getTitle()).isEqualTo(saveBoard.getTitle());
-        assertThat(updateBoardDto.getContent()).isEqualTo(saveBoard.getContent());
+        Board saveBoard =  boardRepository.findById(saveId).get();
+        assertThat(boardUpdateDto.getTitle()).isEqualTo(saveBoard.getTitle());
+        assertThat(boardUpdateDto.getContent()).isEqualTo(saveBoard.getContent());
     }
 
 
+    @DisplayName("블로그 수정 - 이름 없는 경우")
     @Test
-    void 블로그수정하기_이름_없는_경우() {
+    void editBlogNoName() {
         //given
-        Board board1 = new Board("userA", "제목1", "내용 1");
-        BoardDto updateBoardDto = new BoardDto("제목2", "내용 2");
-        boardRepository.save(board1);
+        BoardSaveRequestDto boardSaveDto = new BoardSaveRequestDto("테스트 제목 2", "테스트 내용 2");
+        Long saveId = boardService.save(boardSaveDto);
+        BoardUpdateRequestDto boardUpdateDto = new BoardUpdateRequestDto("수정 제목 2", "수정 내용2");
 
-        assertThatThrownBy(() -> boardService.editBoard(3L, updateBoardDto))
+        //when, then
+        Long noData = saveId + 3;
+        assertThatThrownBy(() -> boardService.update(noData, boardUpdateDto))
                 .isInstanceOf(IllegalArgumentException.class);
 
     }
