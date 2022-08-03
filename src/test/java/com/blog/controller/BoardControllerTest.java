@@ -1,13 +1,12 @@
 package com.blog.controller;
 
 import com.blog.domain.Board;
+import com.blog.dto.BoardResponseDto;
+import com.blog.dto.BoardSaveRequestDto;
 import com.blog.repository.BoardRepository;
 import com.blog.service.BoardService;
 import org.json.JSONString;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -41,57 +40,12 @@ class BoardControllerTest {
 
     @BeforeEach
     void beforeEach() {
-        Board board = new Board("테스트 제목1", "테스트 내용2");
-        boardRepository.save(board);
+        BoardSaveRequestDto boardSaveDto = new BoardSaveRequestDto("테스트 제목 1", "테스트 내용 1");
+        boardService.save(boardSaveDto);
     }
 
     @AfterEach
     void afterEach(){boardRepository.deleteAll();}
-
-
-    @DisplayName("메인 페이지 조회 테스트")
-    @Test
-    void boards() throws Exception{
-        mockMvc.perform(get("/"))
-                .andExpect(status().isOk())
-                .andExpect(view().name("Boards"));
-    }
-
-
-    @DisplayName("등록 페이지 조회 테스트")
-    @Test
-    void addForm() throws Exception{
-        mockMvc.perform(get("/boards/add"))
-                .andExpect(status().isOk())
-                .andExpect(view().name("boards/addForm"))
-                .andExpect(model().attributeExists("board"));
-    }
-
-
-    @DisplayName("수정 페이지 조회 테스트")
-    @Test
-    void editForm() throws Exception{
-        Board findBoard = boardRepository.findByTitle("테스트 제목1");
-
-        mockMvc.perform(get("/boards/{id}/edit", findBoard.getId()))
-                .andExpect(status().isOk())
-                .andExpect(view().name("boards/editForm"))
-                .andExpect(model().attributeExists("board"));
-    }
-
-
-    @DisplayName("상세 페이지 조회 테스트")
-    @Test
-    void board() throws Exception{
-        Board findBoard = boardRepository.findByTitle("테스트 제목1");
-
-        mockMvc.perform(get("/boards/{id}", findBoard.getId()))
-                .andExpect(status().isOk())
-                .andExpect(view().name("boards/Board"))
-                .andExpect(model().attributeExists("board"));
-    }
-
-
 
     @DisplayName("글 등록 테스트- 입력값 정상")
     @Test
@@ -107,45 +61,64 @@ class BoardControllerTest {
     }
 
 
-    @DisplayName("글 등록 테스트- 중북된 제목")
-    @Test
-    void testAddFormRepeatName() throws Exception{
-        mockMvc.perform(post("/boards/add")
-                        .param("title", "테스트 제목1")
-                        .param("content", "테스트 내용")) //괄호위치
-                .andExpect(status().isOk()) //redirect 때문에
-                .andExpect(view().name("/boards/addForm"));
-
-        System.out.println(boardRepository.findAll());
-    }
-
-
     @DisplayName("글 수정 테스트 - 성공")
     @Test
     void editCorrect() throws Exception{
-        Board findBoard = boardRepository.findByTitle("테스트 제목1");
+        BoardResponseDto findBoard = boardService.findByTitle("테스트 제목 1");
 
         mockMvc.perform(post("/boards/{id}/edit", findBoard.getId())
-                        .param("title", "수정 제목1")
-                        .param("content", "수정 내용1"))
+                        .param("title", "수정 제목 1")
+                        .param("content", "수정 내용 1"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("boards/Board"))
                 .andExpect(model().attributeExists("board"));
 
-        assertTrue(boardRepository.existsByTitle("수정 제목1"));
-        assertTrue(boardRepository.existsByContent("수정 내용1"));
+        assertTrue(boardRepository.existsByTitle("수정 제목 1"));
+        assertTrue(boardRepository.existsByContent("수정 내용 1"));
     }
 
-
-    @DisplayName("글 삭제 테스트")
+    @DisplayName("글 수정 테스트 - 실패 : 글 존재 X")
     @Test
-    void delete() throws Exception{
-        Board findBoard = boardRepository.findByTitle("테스트 제목1");
+    void editFailCorrect() throws Exception{
+        String testName = "테스트 제목 3";
 
+        try{
+            BoardResponseDto findBoard = boardService.findByTitle(testName);
+            mockMvc.perform(post("/boards/{id}/edit", findBoard.getId())
+                            .param("title", "수정 제목 1")
+                            .param("content", "수정 내용 1"));
+            }
+        catch (IllegalArgumentException e){
+            Assertions.assertEquals("해당 게시글이 없습니다. title =" + testName, e.getMessage());
+        }
+    }
+
+    @DisplayName("글 삭제 테스트 - 성공")
+    @Test
+    void deleteFail() throws Exception{
+        BoardResponseDto findBoard = boardService.findByTitle("테스트 제목 1");
         mockMvc.perform(MockMvcRequestBuilders
                 .delete("/boards/{id}/delete", findBoard.getId()))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(view().name("redirect:/Boards"));
+    }
+
+    @DisplayName("글 삭제 테스트 - 실패 : 글 존재 X")
+    @Test
+    void delete() throws Exception{
+        String testName = "테스트 제목 3";
+
+        try {
+            BoardResponseDto findBoard = boardService.findByTitle(testName);
+
+            mockMvc.perform(MockMvcRequestBuilders
+                            .delete("/boards/{id}/delete", findBoard.getId()))
+                    .andExpect(status().is3xxRedirection())
+                    .andExpect(view().name("redirect:/Boards"));
+        }
+        catch (IllegalArgumentException e){
+            Assertions.assertEquals("해당 게시글이 없습니다. title =" + testName, e.getMessage());
+        }
     }
 
 }
