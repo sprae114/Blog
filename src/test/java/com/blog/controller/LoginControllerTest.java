@@ -37,7 +37,7 @@ class LoginControllerTest {
 
     @BeforeEach
     void beforeEach() {
-        Member member = new Member("테스트아이디1", "홍길동", "qwer1234");
+        Member member = new Member("abcd1234", "홍길동", "qwer1234");
         memberRepository.save(member);
     }
 
@@ -50,12 +50,12 @@ class LoginControllerTest {
     @Test
     void login() throws Exception{
         mockMvc.perform(post("/login")
-                        .param("loginId", "테스트아이디1")
+                        .param("loginId", "abcd1234")
                         .param("password", "qwer1234"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(view().name("redirect:/"));
 
-        Member saveMember = memberRepository.findByLoginId("테스트아이디1").get();
+        Member saveMember = memberRepository.findByLoginId("abcd1234").get();
         assertNotNull(saveMember);
         assertEquals(saveMember.getPassword(), "qwer1234");
     }
@@ -64,14 +64,14 @@ class LoginControllerTest {
     @Test
     void save() throws Exception{
         mockMvc.perform(post("/signup")
-                        .param("loginId", "테스트아이디2")
+                        .param("loginId", "abcd12345")
                         .param("name", "김철수")
                         .param("password", "rewq1234"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(view().name("redirect:/"));
 
-        Member saveMember = memberRepository.findByLoginId("테스트아이디2").get();
-        assertEquals(saveMember.getLoginId(), "테스트아이디2");
+        Member saveMember = memberRepository.findByLoginId("abcd12345").get();
+        assertEquals(saveMember.getLoginId(), "abcd12345");
         assertEquals(saveMember.getName(), "김철수");
         assertEquals(saveMember.getPassword(), "rewq1234");
     }
