@@ -1,56 +1,68 @@
 package com.blog.controller;
 
 
-import com.blog.domain.Board;
-import com.blog.dto.BoardDto;
+import com.blog.dto.BoardResponseDto;
 import com.blog.dto.BoardSaveRequestDto;
 import com.blog.dto.BoardUpdateRequestDto;
 import com.blog.repository.BoardRepository;
 import com.blog.service.BoardService;
-import com.blog.validation.BoardValidation;
+//import com.blog.validation.BoardValidation;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+
 import org.springframework.ui.Model;
-
+import org.springframework.validation.BindingResult;
 import org.springframework.validation.Errors;
-import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.util.List;
-
+import javax.validation.Valid;
 
 
 @Controller
 @RequiredArgsConstructor
 public class BoardController {
 
-    private final BoardValidation boardValidation;
+//    private final BoardValidation boardValidation;
     private final BoardRepository boardRepository;
     private final BoardService boardService;
 
-
-    @InitBinder("Board")
-    public void initBinder(WebDataBinder webDataBinder) {
-    webDataBinder.addValidators(boardValidation);
-    }
+//
+//    @InitBinder("Board")
+//    public void initBinder(WebDataBinder webDataBinder) {
+//    webDataBinder.addValidators(boardValidation);
+//    }
 
     @PostMapping("/boards/add")
-    public String addForm(@ModelAttribute("board") BoardSaveRequestDto requestDto){
+    public String addForm(@Valid @ModelAttribute("board") BoardSaveRequestDto requestDto, BindingResult bindingResult){
+        if(bindingResult.hasErrors()){
+            return "boards/addForm";
+        }
+
         boardService.save(requestDto);
         return "redirect:/";
     }
 
-    @PostMapping("boards/{id}/edit")  //board수정
-    public String edit(@PathVariable Long id, @ModelAttribute("board") BoardUpdateRequestDto boardUpdateDto){
-        boardService.update(id, boardUpdateDto);
+    @PostMapping("/boards/{id}/edit")
+    public String edit(@PathVariable Long id,
+                       @Valid @ModelAttribute("board") BoardUpdateRequestDto boardUpdateDto,
+                       BindingResult bindingResult,
+                       Model model){
+
+        if(bindingResult.hasErrors()){
+            return "boards/editForm";
+        }
+
+        Long updateId = boardService.update(id, boardUpdateDto);
+        BoardResponseDto saveBoard = boardService.findById(updateId);
+        model.addAttribute("board" , saveBoard);
+
         return "boards/Board";
     }
 
-    @RequestMapping ("/boards/{id}/delete") //board삭제
+    @RequestMapping ("/boards/{id}/delete")
     public String delete(@PathVariable Long id){
         boardService.delete(id);
         return "redirect:/Boards";
     }
+
 }
