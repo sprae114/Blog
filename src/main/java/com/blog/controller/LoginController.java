@@ -35,7 +35,18 @@ public class LoginController {
             return "login/loginForm";
         }
 
+
         Member loginMember = loginService.login(memberSaveRequestDto.getLoginId(), memberSaveRequestDto.getPassword());
+        Member findMember = memberRepository.findByLoginId(memberSaveRequestDto.getLoginId()).get();
+
+        if (loginMember == null) {
+            bindingResult.reject("loginFail", "아이디 또는 비밀번호가 맞지 않습니다.");
+            return "login/loginForm";
+
+        } else if (findMember != null) {
+            bindingResult.reject("duplicateID", "기존에 존재하는 아이디가 있습니다.");
+            return "login/loginForm";
+        }
 
         log.info("{}가 로그인 되었습니다", memberSaveRequestDto.getLoginId());
         HttpSession session = request.getSession();
