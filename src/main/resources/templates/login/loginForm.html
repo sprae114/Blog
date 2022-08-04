@@ -1,19 +1,7 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="utf-8">
-    <link th:href="@{/css/bootstrap.min.css}"
-          href="../css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        .container {
-            max-width: 560px;
-        }
-        .field-error {
-            border-color: #dc3545;
-            color: #dc3545;
-        }
-    </style>
-</head>
+<head th:replace="fragments.html :: head"></head>
+
 <body>
 <div th:replace="fragments.html :: main-nav"></div>
 <div class="container">
@@ -22,7 +10,7 @@
         <h2>로그인 페이지</h2>
     </div>
 
-    <form action="Boards.html" th:action th:object="${loginForm}" method="post">
+    <form action="Boards.html" th:action th:object="${member}" method="post">
         <div>
             <label for="loginId">로그인 ID</label>
             <input type="text" id="loginId" th:field="*{loginId}" class="form-control"
