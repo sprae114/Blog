@@ -1,23 +1,17 @@
 package com.blog.controller;
 
-import com.blog.domain.Board;
-import com.blog.dto.BoardResponseDto;
-import com.blog.dto.BoardSaveRequestDto;
+import com.blog.dto.board.BoardResponseDto;
+import com.blog.dto.board.BoardSaveRequestDto;
 import com.blog.repository.BoardRepository;
 import com.blog.service.BoardService;
-import org.json.JSONString;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.json.JsonContent;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;

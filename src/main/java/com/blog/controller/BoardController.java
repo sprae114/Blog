@@ -1,36 +1,27 @@
 package com.blog.controller;
 
 
-import com.blog.dto.BoardResponseDto;
-import com.blog.dto.BoardSaveRequestDto;
-import com.blog.dto.BoardUpdateRequestDto;
-import com.blog.repository.BoardRepository;
+import com.blog.dto.board.BoardResponseDto;
+import com.blog.dto.board.BoardSaveRequestDto;
+import com.blog.dto.board.BoardUpdateRequestDto;
 import com.blog.service.BoardService;
-//import com.blog.validation.BoardValidation;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
 
 @Controller
+@Slf4j
 @RequiredArgsConstructor
 public class BoardController {
-
-//    private final BoardValidation boardValidation;
-    private final BoardRepository boardRepository;
     private final BoardService boardService;
 
-//
-//    @InitBinder("Board")
-//    public void initBinder(WebDataBinder webDataBinder) {
-//    webDataBinder.addValidators(boardValidation);
-//    }
 
     @PostMapping("/boards/add")
     public String addForm(@Valid @ModelAttribute("board") BoardSaveRequestDto requestDto, BindingResult bindingResult){

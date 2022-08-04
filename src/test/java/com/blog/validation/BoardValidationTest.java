@@ -1,7 +1,7 @@
 package com.blog.validation;
 
-import com.blog.dto.BoardSaveRequestDto;
-import com.blog.dto.BoardUpdateRequestDto;
+import com.blog.dto.board.BoardSaveRequestDto;
+import com.blog.dto.board.BoardUpdateRequestDto;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

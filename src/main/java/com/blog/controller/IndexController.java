@@ -1,13 +1,16 @@
 package com.blog.controller;
 
 import com.blog.domain.Board;
+import com.blog.domain.Member;
+import com.blog.dto.member.MemberSaveRequestDto;
 import com.blog.repository.BoardRepository;
 import com.blog.service.BoardService;
-import com.blog.validation.BoardValidation;
+//import com.blog.validation.BoardValidation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
@@ -15,12 +18,11 @@ import java.util.List;
 @Controller
 @RequiredArgsConstructor
 public class IndexController {
-
-    private final BoardValidation boardValidation;
     private final BoardRepository boardRepository;
-    private final BoardService boardService;
 
-
+    /**
+     * 게시판
+     */
     @GetMapping({"","/", "Boards"})//Board 조회
     public String boards(Model model){
         List<Board> boards = boardRepository.findAll();
@@ -48,5 +50,18 @@ public class IndexController {
         model.addAttribute("board", board);
 
         return "boards/editForm";
+    }
+
+    /**
+     * 로그인
+     */
+    @GetMapping("/login")
+    public String loginForm(@ModelAttribute("member") MemberSaveRequestDto memberSaveRequestDto) {
+        return "login/loginForm";
+    }
+
+    @GetMapping("/signup")
+    public String signupForm(@ModelAttribute("member") MemberSaveRequestDto memberSaveRequestDto){
+        return "login/addMemberForm";
     }
 }

@@ -1,10 +1,9 @@
 package com.blog.service;
 
 import com.blog.domain.Board;
-import com.blog.dto.BoardDto;
-import com.blog.dto.BoardResponseDto;
-import com.blog.dto.BoardSaveRequestDto;
-import com.blog.dto.BoardUpdateRequestDto;
+import com.blog.dto.board.BoardResponseDto;
+import com.blog.dto.board.BoardSaveRequestDto;
+import com.blog.dto.board.BoardUpdateRequestDto;
 import com.blog.repository.BoardRepository;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -13,12 +12,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 
-import static org.assertj.core.api.Assertions.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
@@ -38,10 +34,22 @@ class BoardServiceTest {
     @AfterEach
     void afterEach(){boardRepository.deleteAll();}
 
-    @DisplayName("블로그저장")
+    @DisplayName("글 저장 - 성공")
     @Test
     void saveBolg() {
         BoardSaveRequestDto boardSaveDto = new BoardSaveRequestDto("테스트 제목 2", "테스트 내용 2");
+        Long saveId = boardService.save(boardSaveDto);
+
+        //then
+        Board saveBoard = boardRepository.findById(saveId).get();
+        assertThat(boardSaveDto.getTitle()).isEqualTo(saveBoard.getTitle());
+        assertThat(boardSaveDto.getContent()).isEqualTo(saveBoard.getContent());
+    }
+
+    @DisplayName("글 저장 - 실패 : 제목 글자수 미만")
+    @Test
+    void saveBolgTitle() {
+        BoardSaveRequestDto boardSaveDto = new BoardSaveRequestDto("A", "A");
         Long saveId = boardService.save(boardSaveDto);
 
         //then

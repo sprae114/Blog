@@ -1,8 +1,7 @@
 package com.blog.controller;
 
-import com.blog.domain.Board;
-import com.blog.dto.BoardResponseDto;
-import com.blog.dto.BoardSaveRequestDto;
+import com.blog.dto.board.BoardResponseDto;
+import com.blog.dto.board.BoardSaveRequestDto;
 import com.blog.repository.BoardRepository;
 import com.blog.service.BoardService;
 import org.junit.jupiter.api.AfterEach;
@@ -16,7 +15,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -42,7 +40,7 @@ class IndexControllerTest {
     @AfterEach
     void afterEach(){boardRepository.deleteAll();}
 
-    @DisplayName("메인 페이지 조회 테스트")
+    @DisplayName("글 메인 페이지 조회")
     @Test
     void boards() throws Exception{
         mockMvc.perform(get("/"))
@@ -50,7 +48,7 @@ class IndexControllerTest {
                 .andExpect(view().name("Boards"));
     }
 
-    @DisplayName("등록 페이지 조회 테스트")
+    @DisplayName("글 등록 페이지 조회")
     @Test
     void addForm() throws Exception{
         mockMvc.perform(get("/boards/add"))
@@ -60,7 +58,7 @@ class IndexControllerTest {
     }
 
 
-    @DisplayName("수정 페이지 조회 테스트")
+    @DisplayName("글 수정 페이지 조회")
     @Test
     void editForm() throws Exception{
         BoardResponseDto findBoard = boardService.findByTitle("테스트 제목 1");
@@ -71,7 +69,7 @@ class IndexControllerTest {
                 .andExpect(model().attributeExists("board"));
     }
 
-    @DisplayName("상세 페이지 조회 테스트")
+    @DisplayName("글 상세 페이지 조회")
     @Test
     void board() throws Exception{
         BoardResponseDto findBoard = boardService.findByTitle("테스트 제목 1");
@@ -80,5 +78,21 @@ class IndexControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(view().name("boards/Board"))
                 .andExpect(model().attributeExists("board"));
+    }
+
+    @DisplayName("로그인 페이지 조회")
+    @Test
+    void loginForm() throws Exception{
+        mockMvc.perform(get("/login"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("login/loginForm"));
+    }
+
+    @DisplayName("회원가입 페이지 조회")
+    @Test
+    void signupForm() throws Exception{
+        mockMvc.perform(get("/signup"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("login/addMemberForm"));
     }
 }
