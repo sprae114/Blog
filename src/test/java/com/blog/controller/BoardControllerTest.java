@@ -52,14 +52,24 @@ class BoardControllerTest {
     void testAddFormCorrect() throws Exception{
         mockMvc.perform(post("/boards/add")
                         .param("title", "테스트 제목")
-                        .param("content", "테스트 내용")) //괄호위치
+                        .param("content", "테스트 내용1234567890")) //괄호위치
                 .andExpect(status().is3xxRedirection()) //redirect 때문에
                 .andExpect(view().name("redirect:/"));
 
         assertTrue(boardRepository.existsByTitle("테스트 제목"));
-        assertTrue(boardRepository.existsByContent("테스트 내용"));
+        assertTrue(boardRepository.existsByContent("테스트 내용1234567890"));
     }
 
+
+    @DisplayName("글 등록 테스트- 제목 검증 실패")
+    @Test
+    void testAddFormTitleFail() throws Exception{
+        mockMvc.perform(post("/boards/add")
+                        .param("title", "")
+                        .param("content", "테스트 내용1234567890"))
+                .andExpect(status().isOk()) //redirect 때문에
+                .andExpect(view().name("boards/addForm"));
+    }
 
     @DisplayName("글 수정 테스트 - 성공")
     @Test
@@ -68,13 +78,13 @@ class BoardControllerTest {
 
         mockMvc.perform(post("/boards/{id}/edit", findBoard.getId())
                         .param("title", "수정 제목 1")
-                        .param("content", "수정 내용 1"))
+                        .param("content", "수정내용 내용1234567890"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("boards/Board"))
                 .andExpect(model().attributeExists("board"));
 
         assertTrue(boardRepository.existsByTitle("수정 제목 1"));
-        assertTrue(boardRepository.existsByContent("수정 내용 1"));
+        assertTrue(boardRepository.existsByContent("수정내용 내용1234567890"));
     }
 
     @DisplayName("글 수정 테스트 - 실패 : 글 존재 X")
