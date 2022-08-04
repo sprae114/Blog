@@ -1,22 +1,20 @@
 package com.blog.domain;
 
-import com.blog.dto.BoardDto;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.blog.dto.BoardUpdateRequestDto;
+import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Data
+@Getter
+@Setter //없애야함
 @NoArgsConstructor
 @AllArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
-public class Board {
+public class Board extends BaseTimeEntity{
 
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Id
@@ -31,25 +29,21 @@ public class Board {
     @Column(nullable = false)
     private String content;
 
-    @Column
-    private int viewCnt;
-
-    @CreatedDate
-    private LocalDateTime date;
-
+    @Builder
     public Board(String userId, String title, String content) {
         this.userId = userId;
         this.title = title;
         this.content = content;
     }
 
+    @Builder
     public Board(String title, String content) {
         this.title = title;
         this.content = content;
     }
 
-    public void updateBoard(BoardDto boardDto){
-        this.title = boardDto.getTitle();
-        this.content = boardDto.getContent();
+    public void updateBoard(BoardUpdateRequestDto boardUpdateRequestDto){
+        this.title = boardUpdateRequestDto.getTitle();
+        this.content = boardUpdateRequestDto.getContent();
     }
 }
