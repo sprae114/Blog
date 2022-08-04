@@ -15,7 +15,7 @@ import java.util.Set;
 
 public class BoardValidationTest {
 
-    @DisplayName("BoardSaveRequestDto 제목 검증")
+    @DisplayName("글 등록 제목 검증")
     @Test
     void boardValidationTitleFail(){
         ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
@@ -41,7 +41,7 @@ public class BoardValidationTest {
 
     }
 
-    @DisplayName("BoardSaveRequestDto 내용 검증")
+    @DisplayName("글 등록 내용 검증")
     @Test
     void boardValidationContentFail(){
         ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
@@ -67,7 +67,7 @@ public class BoardValidationTest {
         }
     }
 
-    @DisplayName("BoardUpdateRequestDto 제목 검증")
+    @DisplayName("글 수정 제목 검증")
     @Test
     void boardValidationTitleFail2(){
         ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
@@ -93,7 +93,7 @@ public class BoardValidationTest {
 
     }
 
-    @DisplayName("BoardUpdateRequestDto 내용 검증")
+    @DisplayName("글 수정 내용 검증")
     @Test
     void boardValidationContentFail2(){
         ValidatorFactory factory = Validation.buildDefaultValidatorFactory();

@@ -37,11 +37,6 @@ public class LoginController {
 
         Member loginMember = loginService.login(memberSaveRequestDto.getLoginId(), memberSaveRequestDto.getPassword());
 
-        if (loginMember == null) {
-            bindingResult.reject("loginFail", "아이디 또는 비밀번호가 맞지 않습니다.");
-            return "login/loginForm";
-        }
-
         log.info("{}가 로그인 되었습니다", memberSaveRequestDto.getLoginId());
         HttpSession session = request.getSession();
         session.setAttribute("loginMember", loginMember);
@@ -51,12 +46,18 @@ public class LoginController {
 
 
     @PostMapping("/signup")
-    public String addMember(@ModelAttribute("member") MemberSaveRequestDto memberSaveRequestDto) {
+    public String addMember(@Valid @ModelAttribute("member") MemberSaveRequestDto memberSaveRequestDto,
+                            BindingResult bindingResult) {
+
+        if (bindingResult.hasErrors()) {
+            return "login/addMemberForm";
+        }
 
         loginService.save(memberSaveRequestDto);
         log.info("{}가 회원가입 되었습니다", memberSaveRequestDto.getLoginId());
         return "redirect:/";
     }
+
 
     @PostMapping("/logout")
     public String logout(HttpServletRequest request) {

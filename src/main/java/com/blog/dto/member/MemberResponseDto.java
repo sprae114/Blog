@@ -16,7 +16,6 @@ public class MemberResponseDto {
     private String loginId; //로그인 ID
 
     private String password;
-
     public MemberResponseDto(Long id, String loginId, String password) {
         this.id = id;
         this.loginId = loginId;
