@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.Range;
+import org.hibernate.validator.constraints.UniqueElements;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Pattern;
@@ -17,10 +18,8 @@ import javax.validation.constraints.Pattern;
 @NoArgsConstructor
 public class MemberSaveRequestDto {
 
-
     @Pattern(regexp = "^[a-zA-Z0-9]{2,10}$", message = "2 ~ 10글자 영어와 숫자로만 구성해주세요.")
     private String loginId; //로그인 ID
-
 
     @Pattern(regexp = "[가-힣]{2,4}$", message = "2 ~ 4글자 한글로만 구성해주세요.")
     private String name; //사용자 이름

@@ -1,6 +1,7 @@
 package com.blog.controller;
 
 import com.blog.domain.Member;
+import com.blog.dto.member.MemberLoginSaveRequestDto;
 import com.blog.dto.member.MemberSaveRequestDto;
 import com.blog.repository.MemberRepository;
 import com.blog.service.LoginService;
@@ -24,31 +25,26 @@ public class LoginController {
     private final MemberRepository memberRepository;
     private final LoginService loginService;
 
-
     @PostMapping ("/login")
-    public String login(@Valid @ModelAttribute("member") MemberSaveRequestDto memberSaveRequestDto,
+    public String login(@Valid @ModelAttribute("member") MemberLoginSaveRequestDto memberLoginSaveRequestDto,
                         BindingResult bindingResult,
                         @RequestParam(defaultValue = "/") String redirectURL,
                         HttpServletRequest request) {
 
-        if (bindingResult.hasErrors()) {
+        if (bindingResult.hasErrors()) { //기존 타입과 필드 검증
             return "login/loginForm";
         }
 
-
-        Member loginMember = loginService.login(memberSaveRequestDto.getLoginId(), memberSaveRequestDto.getPassword());
-        Member findMember = memberRepository.findByLoginId(memberSaveRequestDto.getLoginId()).get();
+        Member loginMember = loginService.login(memberLoginSaveRequestDto.getLoginId(),
+                memberLoginSaveRequestDto.getPassword());
 
         if (loginMember == null) {
             bindingResult.reject("loginFail", "아이디 또는 비밀번호가 맞지 않습니다.");
             return "login/loginForm";
-
-        } else if (findMember != null) {
-            bindingResult.reject("duplicateID", "기존에 존재하는 아이디가 있습니다.");
-            return "login/loginForm";
         }
 
-        log.info("{}가 로그인 되었습니다", memberSaveRequestDto.getLoginId());
+
+        log.info("{}가 로그인 되었습니다", memberLoginSaveRequestDto.getLoginId());
         HttpSession session = request.getSession();
         session.setAttribute("loginMember", loginMember);
 
@@ -64,8 +60,14 @@ public class LoginController {
             return "login/addMemberForm";
         }
 
+        if (memberRepository.existsByLoginId(memberSaveRequestDto.getLoginId())) {
+            bindingResult.reject("doubleID", "이미 사용중인 아이디 입니다");
+            return "login/addMemberForm";
+        }
+
         loginService.save(memberSaveRequestDto);
         log.info("{}가 회원가입 되었습니다", memberSaveRequestDto.getLoginId());
+
         return "redirect:/";
     }
 
