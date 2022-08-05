@@ -1,9 +1,19 @@
 package com.blog.validation;
 
+import com.blog.domain.Member;
+import com.blog.dto.member.MemberLoginSaveRequestDto;
 import com.blog.dto.member.MemberSaveRequestDto;
+import com.blog.repository.MemberRepository;
+import com.blog.service.LoginService;
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
@@ -11,7 +21,42 @@ import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
 import java.util.Set;
 
+@ExtendWith(SpringExtension.class)
+@SpringBootTest
 public class MemberValidationTest {
+    @Autowired
+    MemberRepository memberRepository;
+    @Autowired
+    LoginService loginService;
+
+    @BeforeEach
+    void beforeEach() {
+        MemberSaveRequestDto saveMember = new MemberSaveRequestDto("abcd1234", "홍길동", "qwer1234");
+        loginService.save(saveMember);
+    }
+    @AfterEach
+    void afterEach(){memberRepository.deleteAll();}
+
+
+    @DisplayName("회원가입 - 중복된 ID")
+    @Test
+    void memberValidationDuplicateID(){
+        ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+        Validator validator = factory.getValidator();
+
+        String LoginId = "abcd1234";
+        String name = "홍길동";
+        String password = "qwer1234";
+
+        MemberSaveRequestDto saveMemberDto = new MemberSaveRequestDto(LoginId, name, password);
+
+        //중복된 ID
+        Set<ConstraintViolation<MemberSaveRequestDto>> validate1 = validator.validate(saveMemberDto);
+        for (ConstraintViolation<MemberSaveRequestDto> violation : validate1) {
+            Assertions.assertThat(violation.getMessage()).isEqualTo("");
+        }
+    }
+
     @DisplayName("회원가입 - 아이디 검증 : 길이")
     @Test
     void memberValidationLoginIDLength(){
@@ -30,6 +75,7 @@ public class MemberValidationTest {
         Set<ConstraintViolation<MemberSaveRequestDto>> validate1 = validator.validate(saveMemberDtoShort);
         for (ConstraintViolation<MemberSaveRequestDto> violation : validate1) {
             Assertions.assertThat(violation.getMessage()).isEqualTo("2 ~ 10글자 영어와 숫자로만 구성해주세요.");
+
         }
 
         //아이디 길이 이상
