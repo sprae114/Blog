@@ -9,14 +9,29 @@
         <h2>글 목록</h2>
     </div>
 
-    <div class="row">
+    <form method="get" class="form-inline">
         <div class="col">
-            <button class="btn btn-primary float-end"
-                    onclick="location.href='addForm.html'"
-                    th:onclick="|location.href='@{/boards/add}'|"
-                    type="button">글 등록</button>
+            <div class="col" >
+                <button class="btn btn-primary float-end"
+                        onclick="location.href='addForm.html'"
+                        th:onclick="|location.href='@{/boards/add}'|"
+                        th:if="${#session}"
+                        type="button">글 등록</button>
+            </div>
+            <div class="col">
+            </div>
         </div>
-    </div>
+
+
+        <div class="row">
+            <div class="col">
+                <input type="text"  class="form-control" placeholder="찾는 제목"/>
+            </div>
+            <div class="col">
+                <button type="submit" class="btn btn-secondary mb-2">검색</button>
+            </div>
+        </div>
+    </form>
 
     <hr class="my-4">
     <div>
@@ -32,7 +47,7 @@
             </thead>
             <tbody>
             <tr th:each="board : ${boards}">
-                <td th:text="${board.id}">번호</td>
+                <td th:text="${board.id}" >번호</td>
                 <td colspan="3"><a href="Board.html" th:href="@{/boards/{id}(id=${board.id})}" th:text="${board.title}">제목</a></td>
                 <td th:text="${board.userId}">작성자</td>
                 <td th:text="${#temporals.format(board.date, 'yyyy-MM-dd')}">등록일</td>
