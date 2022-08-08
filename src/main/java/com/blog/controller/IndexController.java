@@ -1,17 +1,20 @@
 package com.blog.controller;
 
 import com.blog.domain.Board;
-import com.blog.domain.Member;
+import com.blog.dto.board.BoardSearchDto;
 import com.blog.dto.member.MemberSaveRequestDto;
 import com.blog.repository.BoardRepository;
-import com.blog.service.BoardService;
-//import com.blog.validation.BoardValidation;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.List;
 
@@ -24,12 +27,18 @@ public class IndexController {
      * 게시판
      */
     @GetMapping({"","/", "Boards"})//Board 조회
-    public String boards(Model model){
-        List<Board> boards = boardRepository.findAll();
+    public String boards(Model model, @PageableDefault(size = 4) Pageable pageable){
+        Page<Board> boards = boardRepository.findAll(pageable);
+        int startPage = Math.max(1, boards.getPageable().getPageNumber() - 4);
+        int endPage = Math.min(boards.getTotalPages(), boards.getPageable().getPageNumber() + 4);
+
+        model.addAttribute("startPage",startPage);
+        model.addAttribute("endPage",endPage);
         model.addAttribute("boards", boards);
         return "Boards";
     }
 
+    
     @GetMapping("/boards/add") //addForm 조회
     public String addForm(Model model){
         model.addAttribute("board", new Board());

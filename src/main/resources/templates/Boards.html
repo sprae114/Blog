@@ -9,32 +9,20 @@
         <h2>글 목록</h2>
     </div>
 
-    <form method="get" class="form-inline">
-        <div class="col">
-            <div class="col" >
-                <button class="btn btn-primary float-end"
-                        onclick="location.href='addForm.html'"
-                        th:onclick="|location.href='@{/boards/add}'|"
-                        th:if="${#session}"
-                        type="button">글 등록</button>
-            </div>
-            <div class="col">
-            </div>
+    <div class="row">
+        <div class="col" >
+            <button class="btn btn-primary float-end"
+                    onclick="location.href='addForm.html'"
+                    th:onclick="|location.href='@{/boards/add}'|"
+                    th:if="${#session}"
+                    type="button">글 등록</button>
         </div>
+    </div>
 
-
-        <div class="row">
-            <div class="col">
-                <input type="text"  class="form-control" placeholder="찾는 제목"/>
-            </div>
-            <div class="col">
-                <button type="submit" class="btn btn-secondary mb-2">검색</button>
-            </div>
-        </div>
-    </form>
 
     <hr class="my-4">
     <div>
+        <div> 총 건수 : <span th:text="${boards.getTotalElements}"></span></div>
         <table class="table">
             <thead>
             <tr>
@@ -54,7 +42,24 @@
             </tr>
             </tbody>
         </table>
+        <nav aria-label="Page navigation example">
+            <ul class="pagination">
+                <li class="page-item">
+                    <a class="page-link" href="#" th:href="@{/(page = ${boards.pageable.pageNumber - 1})}">Previous</a>
+                </li>
+
+                <li class="page-item" th:each="i: ${#numbers.sequence(startPage, endPage)}"
+                    th:classappend="${i == boards.pageable.pageNumber + 1} ? 'disabled'">
+                    <a class="page-link" href="#" th:href="@{/(page = ${i - 1})}"th:text="${i}"> 1 </a>
+                </li>
+
+                <li class="page-item">
+                    <a class="page-link" href="#" th:href="@{/(page = ${boards.pageable.pageNumber + 1})}">Next</a>
+                </li>
+            </ul>
+        </nav>
     </div>
+
 
 </div> <!-- /container -->
 
