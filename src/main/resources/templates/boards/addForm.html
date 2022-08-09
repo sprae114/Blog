@@ -7,25 +7,12 @@
 <div th:replace="fragments.html :: main-nav"></div>
 <div class="container">
 
-    <div class="py-5 text-center">
-        <h2>글 등록</h2>
-    </div>
+
 
     <form action="/Boards" th:action th:object="${board}" method="post">
-        <div>
-            <label for="title">제목</label>
-            <input type="text" id="title" th:field="*{title}" class="form-control" th:errorclass="field-error" placeholder="제목을 입력하세요.">
-            <div class="field-error" th:errors="*{title}"> 제목 오류 </div>
+        <div class="py-5 text-center">
+            <h2>글 등록</h2>
         </div>
-
-        <div>
-            <label for="content">내용</label>
-            <textarea cols="150" rows="10" id="content" th:field="*{content}" class="form-control" th:errorclass="field-error" placeholder="내용을 입력하세요.">
-            </textarea>
-            <div class="field-error" th:errors="*{content}"> 내용 오류 </div>
-        </div>
-
-        <hr class="my-4">
 
         <div class="row">
             <div class="col">
@@ -38,6 +25,24 @@
                         type="button">취소</button>
             </div>
         </div>
+
+        <div><hr class="my-5">
+        </div>
+
+        <div>
+            <label for="title">제목</label>
+            <input type="text" id="title" th:field="*{title}" class="form-control" th:errorclass="field-error" placeholder="제목을 입력하세요.">
+            <div class="field-error" th:errors="*{title}"> 제목 오류 </div>
+        </div>
+
+        <div>
+            <label for="content">내용</label>
+            <textarea cols="150" rows="5" id="content" th:field="*{content}" class="form-control" th:errorclass="field-error" placeholder="내용을 입력하세요.">
+            </textarea>
+            <div class="field-error" th:errors="*{content}"> 내용 오류 </div>
+        </div>
+
+        <hr class="my-4">
 
     </form>
 
