@@ -13,7 +13,9 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import javax.websocket.Session;
 
 
 @Controller
@@ -24,12 +26,16 @@ public class BoardController {
 
 
     @PostMapping("/boards/add")
-    public String addForm(@Valid @ModelAttribute("board") BoardSaveRequestDto requestDto, BindingResult bindingResult){
+    public String addForm(@Valid @ModelAttribute("board") BoardSaveRequestDto requestDto,
+                          BindingResult bindingResult,
+                          HttpServletRequest request){
         if(bindingResult.hasErrors()){
             return "boards/addForm";
         }
+        Object loginId = request.getSession().getAttribute("loginId");
+        String saveLoginId = String.valueOf(loginId);
 
-        boardService.save(requestDto);
+        boardService.save(requestDto, saveLoginId);
         return "redirect:/";
     }
 

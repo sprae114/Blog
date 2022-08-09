@@ -18,8 +18,11 @@ public class BoardService {
     private final BoardRepository boardRepository;
 
     @Transactional
-    public Long save(BoardSaveRequestDto requestDto){
-        return boardRepository.save(requestDto.toEntity()).getId();
+    public Long save(BoardSaveRequestDto requestDto, String saveLoginId){
+        Board board = requestDto.toEntity();
+        board.setUserId(saveLoginId);
+
+        return boardRepository.save(board).getId();
     }
 
     @Transactional
@@ -52,6 +55,5 @@ public class BoardService {
                 new IllegalArgumentException("해당 게시글이 없습니다. id="+ id));
         boardRepository.delete(board);
     }
-
 
 }

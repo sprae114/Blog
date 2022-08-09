@@ -8,17 +8,18 @@ import javax.persistence.*;
 
 @Entity
 @Getter
-@Setter //없애야함
 @NoArgsConstructor
 @AllArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
 public class Board extends BaseTimeEntity{
 
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue
     @Id
     private Long id;
 
-    @Column
+    @ManyToOne
+    private Member memberId;
+
     private String userId;
 
     @Column(nullable = false)
@@ -26,6 +27,10 @@ public class Board extends BaseTimeEntity{
 
     @Column(nullable = false)
     private String content;
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
 
     @Builder
     public Board(String userId, String title, String content) {

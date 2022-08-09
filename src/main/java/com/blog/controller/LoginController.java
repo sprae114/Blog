@@ -47,6 +47,7 @@ public class LoginController {
         log.info("{}가 로그인 되었습니다", memberLoginSaveRequestDto.getLoginId());
         HttpSession session = request.getSession();
         session.setAttribute("loginMember", loginMember);
+        session.setAttribute("loginId", memberLoginSaveRequestDto.getLoginId());
 
         return "redirect:" + redirectURL;
     }
