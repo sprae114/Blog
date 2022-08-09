@@ -28,7 +28,7 @@ class BoardServiceTest {
     @BeforeEach
     void beforeEach(){
         BoardSaveRequestDto boardSaveDto = new BoardSaveRequestDto("테스트 제목 1", "테스트 내용 1");
-        boardService.save(boardSaveDto);
+        boardService.save(boardSaveDto, "UserA");
     }
 
     @AfterEach
@@ -38,7 +38,7 @@ class BoardServiceTest {
     @Test
     void saveBolg() {
         BoardSaveRequestDto boardSaveDto = new BoardSaveRequestDto("테스트 제목 2", "테스트 내용 2");
-        Long saveId = boardService.save(boardSaveDto);
+        Long saveId = boardService.save(boardSaveDto, "UserA");
 
         //then
         Board saveBoard = boardRepository.findById(saveId).get();
@@ -50,7 +50,7 @@ class BoardServiceTest {
     @Test
     void saveBolgTitle() {
         BoardSaveRequestDto boardSaveDto = new BoardSaveRequestDto("A", "A");
-        Long saveId = boardService.save(boardSaveDto);
+        Long saveId = boardService.save(boardSaveDto, "UserA");
 
         //then
         Board saveBoard = boardRepository.findById(saveId).get();
@@ -64,8 +64,8 @@ class BoardServiceTest {
         //given
         BoardSaveRequestDto boardSaveDto1 = new BoardSaveRequestDto("테스트 제목 2", "테스트 내용 2");
         BoardSaveRequestDto boardSaveDto2 = new BoardSaveRequestDto("테스트 제목 3", "테스트 내용 3");
-        Long saveId1 = boardService.save(boardSaveDto1);
-        Long saveId2 = boardService.save(boardSaveDto2);
+        Long saveId1 = boardService.save(boardSaveDto1, "UserA");
+        Long saveId2 = boardService.save(boardSaveDto2, "UserA");
 
         //when
         List<Board> boards = boardRepository.findAll();
@@ -79,7 +79,7 @@ class BoardServiceTest {
     void searchBlogPresent(){
         //given
         BoardSaveRequestDto boardSaveDto = new BoardSaveRequestDto("테스트 제목 2", "테스트 내용 2");
-        Long saveId = boardService.save(boardSaveDto);
+        Long saveId = boardService.save(boardSaveDto, "UserA");
 
         try {
             BoardResponseDto findBoardDto = boardService.findById(saveId);
@@ -98,7 +98,7 @@ class BoardServiceTest {
     void searchBlogEmpty(){
         //given
         BoardSaveRequestDto boardSaveDto = new BoardSaveRequestDto("테스트 제목 2", "테스트 내용 2");
-        Long saveId = boardService.save(boardSaveDto);
+        Long saveId = boardService.save(boardSaveDto, "UserA");
         Long noData = saveId + 3;
 
         try {
@@ -119,7 +119,7 @@ class BoardServiceTest {
     void editBlog() {
         //given
         BoardSaveRequestDto boardSaveDto = new BoardSaveRequestDto("테스트 제목 2", "테스트 내용 2");
-        Long saveId = boardService.save(boardSaveDto);
+        Long saveId = boardService.save(boardSaveDto, "UserA");
         BoardUpdateRequestDto boardUpdateDto = new BoardUpdateRequestDto("수정 제목 2", "수정 내용2");
 
         //when
@@ -137,7 +137,7 @@ class BoardServiceTest {
     void editBlogNoName() {
         //given
         BoardSaveRequestDto boardSaveDto = new BoardSaveRequestDto("테스트 제목 2", "테스트 내용 2");
-        Long saveId = boardService.save(boardSaveDto);
+        Long saveId = boardService.save(boardSaveDto, "UserA");
         BoardUpdateRequestDto boardUpdateDto = new BoardUpdateRequestDto("수정 제목 2", "수정 내용2");
 
         //when, then

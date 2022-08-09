@@ -34,7 +34,7 @@ class IndexControllerTest {
     @BeforeEach
     void beforeEach() {
         BoardSaveRequestDto boardSaveDto = new BoardSaveRequestDto("테스트 제목 1", "테스트 내용 1");
-        boardService.save(boardSaveDto);
+        boardService.save(boardSaveDto, "UserA");
     }
 
     @AfterEach
