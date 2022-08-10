@@ -12,7 +12,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.test.web.reactive.server.WebTestClient;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -31,10 +34,20 @@ class IndexControllerTest {
     @Autowired
     BoardRepository boardRepository;
 
+    protected MockHttpSession session;
+
+    protected MockHttpServletRequest request;
+
     @BeforeEach
     void beforeEach() {
         BoardSaveRequestDto boardSaveDto = new BoardSaveRequestDto("테스트 제목 1", "테스트 내용 1");
         boardService.save(boardSaveDto, "UserA");
+
+        session = new MockHttpSession();
+        session.setAttribute("loginMember","UserA");
+
+        request = new MockHttpServletRequest();
+        request.setSession(session);
     }
 
     @AfterEach
@@ -95,4 +108,6 @@ class IndexControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(view().name("login/addMemberForm"));
     }
+
+
 }

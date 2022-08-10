@@ -5,6 +5,7 @@ import com.blog.dto.board.BoardResponseDto;
 import com.blog.dto.board.BoardSaveRequestDto;
 import com.blog.dto.board.BoardUpdateRequestDto;
 import com.blog.service.BoardService;
+import com.blog.service.ReplyService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
@@ -22,7 +23,10 @@ import javax.websocket.Session;
 @Slf4j
 @RequiredArgsConstructor
 public class BoardController {
+
     private final BoardService boardService;
+
+    private final ReplyService replyService;
 
 
     @PostMapping("/boards/add")
@@ -59,6 +63,7 @@ public class BoardController {
     @RequestMapping ("/boards/{id}/delete")
     public String delete(@PathVariable Long id){
         boardService.delete(id);
+        replyService.deleteBoard(id);
         return "redirect:/Boards";
     }
 

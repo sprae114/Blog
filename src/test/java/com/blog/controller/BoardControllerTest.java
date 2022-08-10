@@ -9,14 +9,18 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+
+import javax.servlet.http.HttpSession;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
@@ -32,14 +36,24 @@ class BoardControllerTest {
     @Autowired
     BoardRepository boardRepository;
 
+    protected MockHttpServletRequest request;
+
     @BeforeEach
-    void beforeEach() {
+    void beforeEach() throws Exception{
         BoardSaveRequestDto boardSaveDto = new BoardSaveRequestDto("테스트 제목 1", "테스트 내용 1");
         boardService.save(boardSaveDto, "UserA");
+
+        request = new MockHttpServletRequest();
+        HttpSession session = request.getSession();
+        session.setAttribute("loginMember", "UserA");
     }
 
     @AfterEach
-    void afterEach(){boardRepository.deleteAll();}
+    void afterEach(){
+        boardRepository.deleteAll();
+        HttpSession session = request.getSession();
+        session.invalidate();
+    }
 
     @DisplayName("글 등록 테스트- 입력값 정상")
     @Test

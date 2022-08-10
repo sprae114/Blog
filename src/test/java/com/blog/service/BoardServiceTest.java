@@ -114,7 +114,7 @@ class BoardServiceTest {
     }
 
 
-    @DisplayName("블로그 수정 - 성공")
+    @DisplayName("글 수정 - 성공")
     @Test
     void editBlog() {
         //given
@@ -132,7 +132,7 @@ class BoardServiceTest {
     }
 
 
-    @DisplayName("블로그 수정 - 이름 없는 경우")
+    @DisplayName("글 수정 - 이름 없는 경우")
     @Test
     void editBlogNoName() {
         //given
@@ -144,6 +144,39 @@ class BoardServiceTest {
         Long noData = saveId + 3;
         assertThatThrownBy(() -> boardService.update(noData, boardUpdateDto))
                 .isInstanceOf(IllegalArgumentException.class);
+
+    }
+
+
+    @DisplayName("글 삭제 - 성공")
+    @Test
+    void deleteBoardCorrect() {
+        //given
+        BoardSaveRequestDto boardSaveDto = new BoardSaveRequestDto("테스트 제목 2", "테스트 내용 2");
+        Long saveId = boardService.save(boardSaveDto, "UserA");
+
+        //when
+        boardService.delete(saveId);
+
+        //then
+        assertThat(boardRepository.findById(saveId)).isEmpty();
+    }
+
+    @DisplayName("글 삭제 - 이름 없는 경우")
+    @Test
+    void deleteBoardFail() {
+        //given
+        BoardSaveRequestDto boardSaveDto = new BoardSaveRequestDto("테스트 제목 2", "테스트 내용 2");
+        Long saveId = boardService.save(boardSaveDto, "UserA");
+        Long id = saveId + 3;
+
+        //when
+        try {
+            boardService.delete(id);
+        }
+        catch (IllegalArgumentException e){
+            Assertions.assertEquals("해당 게시글이 없습니다. id=" + id, e.getMessage());
+        }
 
     }
 }

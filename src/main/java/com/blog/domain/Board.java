@@ -10,15 +10,11 @@ import javax.persistence.*;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@EntityListeners(AuditingEntityListener.class)
 public class Board extends BaseTimeEntity{
 
     @GeneratedValue
     @Id
     private Long id;
-
-    @ManyToOne
-    private Member memberId;
 
     private String userId;
 

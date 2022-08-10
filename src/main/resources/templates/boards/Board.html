@@ -55,10 +55,11 @@
 
 
     <!--    댓글      -->
-    <div class="card-header">댓글 등록하기</div>
-    <form class="d-flex" role="search" for="searchText" th:action = "@{/boards/{id}/addReply(id=${board.id})}"  method="post" >
+    <div class="card-header" th:if="${#session}">댓글 등록하기</div>
+    <form class="d-flex"  th:if="${#session}" role="search" for="searchText" th:action = "@{/boards/{id}/addReply(id=${board.id})}"  method="post" >
         <input class="form-control me-3" id="searchText"
                name = "searchText" row ="1" type="search" placeholder="댓글을 등록하세요" aria-label="Search" th:field="${replySaveRequestDto.content}">
+        <div class="field-error" th:errors="${replySaveRequestDto.content}"> 내용 오류 </div>
         <button class="btn btn-success"  style="width:60pt;height:30pt;" type="submit"> 등록 </button>
     </form>
     <br>
