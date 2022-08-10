@@ -4,6 +4,7 @@ package com.blog.controller;
 import com.blog.dto.board.BoardResponseDto;
 import com.blog.dto.board.BoardSaveRequestDto;
 import com.blog.dto.board.BoardUpdateRequestDto;
+import com.blog.dto.reply.ReplySaveRequestDto;
 import com.blog.service.BoardService;
 import com.blog.service.ReplyService;
 import lombok.RequiredArgsConstructor;
@@ -47,6 +48,7 @@ public class BoardController {
     public String edit(@PathVariable Long id,
                        @Valid @ModelAttribute("board") BoardUpdateRequestDto boardUpdateDto,
                        BindingResult bindingResult,
+                       ReplySaveRequestDto requestDto,
                        Model model){
 
         if(bindingResult.hasErrors()){
@@ -57,7 +59,7 @@ public class BoardController {
         BoardResponseDto saveBoard = boardService.findById(updateId);
         model.addAttribute("board" , saveBoard);
 
-        return "boards/Board";
+        return "redirect:/" + "boards/{id}";
     }
 
     @RequestMapping ("/boards/{id}/delete")
