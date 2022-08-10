@@ -87,9 +87,8 @@ class BoardControllerTest {
         mockMvc.perform(post("/boards/{id}/edit", findBoard.getId())
                         .param("title", "수정 제목 1")
                         .param("content", "수정내용 내용1234567890"))
-                .andExpect(status().isOk())
-                .andExpect(view().name("boards/Board"))
-                .andExpect(model().attributeExists("board"));
+                .andExpect(status().is3xxRedirection())
+                .andExpect(view().name("redirect:/boards/{id}"));
 
         assertTrue(boardRepository.existsByTitle("수정 제목 1"));
         assertTrue(boardRepository.existsByContent("수정내용 내용1234567890"));
