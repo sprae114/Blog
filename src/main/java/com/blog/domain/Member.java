@@ -1,12 +1,10 @@
 package com.blog.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
-import java.util.HashSet;
-import java.util.Set;
 
 @Entity
 @Getter
@@ -27,10 +25,19 @@ public class Member {
     @NotEmpty
     private String password;
 
-    @Builder
+    private String salt;
+
+
     public Member(String loginId, String name, String password) {
         this.loginId = loginId;
         this.name = name;
         this.password = password;
+    }
+    @Builder
+    public Member(String loginId, String name, String password, String salt) {
+        this.loginId = loginId;
+        this.name = name;
+        this.password = password;
+        this.salt = salt;
     }
 }

@@ -22,4 +22,5 @@ public class MemberLoginSaveRequestDto {
         this.loginId = loginId;
         this.password = password;
     }
+
 }

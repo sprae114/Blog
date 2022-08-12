@@ -7,6 +7,8 @@ import lombok.Setter;
 import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.NotBlank;
+import java.security.MessageDigest;
+import java.security.SecureRandom;
 
 @Getter
 @Setter
@@ -30,4 +32,6 @@ public class BoardSaveRequestDto {
                 .content(content)
                 .build();
     }
+
+
 }

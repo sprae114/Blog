@@ -9,5 +9,9 @@ import java.util.Optional;
 public interface MemberRepository extends JpaRepository<Member, Long> {
     boolean existsByLoginId(String LoginId);
 
+    boolean existsByPassword(String Password);
+
     Optional<Member> findByLoginId(String loginId);
+
+
 }

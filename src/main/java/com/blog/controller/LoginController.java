@@ -35,21 +35,35 @@ public class LoginController {
             return "login/loginForm";
         }
 
-        Member loginMember = loginService.login(memberLoginSaveRequestDto.getLoginId(),
-                memberLoginSaveRequestDto.getPassword());
+        try {
 
-        if (loginMember == null) {
-            bindingResult.reject("loginFail", "아이디 또는 비밀번호가 맞지 않습니다.");
-            return "login/loginForm";
+            if(memberRepository.findByLoginId(memberLoginSaveRequestDto.getLoginId()).isEmpty()){
+                bindingResult.reject("loginIdFail", "아이디가 존재하지 않습니다.");
+                return "login/loginForm";
+            }
+
+            Member loginMember = loginService.login(memberLoginSaveRequestDto.getLoginId(),
+                    memberLoginSaveRequestDto.getPassword());
+
+            if (loginMember == null) {
+                bindingResult.reject("loginFail", "아이디 또는 비밀번호가 맞지 않습니다.");
+                return "login/loginForm";
+            }
+
+
+
+            log.info("{}가 로그인 되었습니다", memberLoginSaveRequestDto.getLoginId());
+            HttpSession session = request.getSession();
+            session.setAttribute("loginMember", loginMember);
+            session.setAttribute("loginId", memberLoginSaveRequestDto.getLoginId());
+
+        }
+        catch (Exception e){
+            throw new RuntimeException(e);
         }
 
-
-        log.info("{}가 로그인 되었습니다", memberLoginSaveRequestDto.getLoginId());
-        HttpSession session = request.getSession();
-        session.setAttribute("loginMember", loginMember);
-        session.setAttribute("loginId", memberLoginSaveRequestDto.getLoginId());
-
         return "redirect:" + redirectURL;
+
     }
 
 
@@ -66,8 +80,15 @@ public class LoginController {
             return "login/addMemberForm";
         }
 
-        loginService.save(memberSaveRequestDto);
-        log.info("{}가 회원가입 되었습니다", memberSaveRequestDto.getLoginId());
+        try {
+            loginService.save(memberSaveRequestDto);
+            log.info("{}가 회원가입 되었습니다", memberSaveRequestDto.getLoginId());
+
+
+        }
+        catch (Exception e){
+            throw new RuntimeException(e);
+        }
 
         return "redirect:/";
     }
