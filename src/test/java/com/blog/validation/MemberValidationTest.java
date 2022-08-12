@@ -32,7 +32,13 @@ public class MemberValidationTest {
     @BeforeEach
     void beforeEach() {
         MemberSaveRequestDto saveMember = new MemberSaveRequestDto("abcd1234", "홍길동", "qwer1234");
-        loginService.save(saveMember);
+        try {
+            loginService.save(saveMember);
+        }
+        catch (Exception e){
+            new RuntimeException(e);
+        }
+
     }
     @AfterEach
     void afterEach(){memberRepository.deleteAll();}

@@ -14,6 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import java.nio.charset.StandardCharsets;
+
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -35,7 +37,14 @@ class LoginServiceTest {
                 .password("abcd1234")
                 .build();
 
-        loginService.save(saveRequestDto);
+
+        try {
+            loginService.save(saveRequestDto);
+        }
+
+        catch (Exception e){
+            throw new RuntimeException(e);
+        }
     }
 
     @AfterEach
@@ -50,12 +59,19 @@ class LoginServiceTest {
                 .password("qwer1234")
                 .build();
 
-        Long id = loginService.save(saveRequestDto);
-        Member findMember = memberRepository.findById(id).get();
 
-        assertThat(saveRequestDto.getLoginId()).isEqualTo(findMember.getLoginId());
-        assertThat(saveRequestDto.getName()).isEqualTo(findMember.getName());
-        assertThat(saveRequestDto.getPassword()).isEqualTo(findMember.getPassword());
+        try {
+            Long id = loginService.save(saveRequestDto);
+            Member findMember = memberRepository.findById(id).get();
+
+            assertThat(saveRequestDto.getLoginId()).isEqualTo(findMember.getLoginId());
+            assertThat(saveRequestDto.getName()).isEqualTo(findMember.getName());
+            assertThat(saveRequestDto.getPassword()).isEqualTo(findMember.getPassword());
+        }
+
+        catch (Exception e){
+            throw new RuntimeException(e);
+        }
 
     }
 
@@ -68,10 +84,17 @@ class LoginServiceTest {
                 .name("김철수")
                 .password("abcd1234")
                 .build();
+        try {
+            Member loginMember = loginService.login(saveRequestDto.getLoginId(), saveRequestDto.getPassword());
+            assertThat(loginMember.getLoginId()).isEqualTo(saveRequestDto.getLoginId());
+            String hashingPassword = loginService.get_password(saveRequestDto.getLoginId(),
+                    saveRequestDto.getPassword().getBytes(StandardCharsets.UTF_8));
+            assertThat(loginMember.getPassword()).isEqualTo(hashingPassword);
+        }
+        catch (Exception e){
+            throw new RuntimeException(e);
+        }
 
-        Member loginMember = loginService.login(saveRequestDto.getLoginId(), saveRequestDto.getPassword());
-        assertThat(loginMember.getLoginId()).isEqualTo(saveRequestDto.getLoginId());
-        assertThat(loginMember.getPassword()).isEqualTo(saveRequestDto.getPassword());
     }
 
 
@@ -84,8 +107,15 @@ class LoginServiceTest {
                 .password("1234")
                 .build();
 
-        Member saveMember = loginService.login(saveRequestDto.getLoginId(), saveRequestDto.getPassword());
-        assertThat(saveMember).isNull();
+
+        try {
+            Member saveMember = loginService.login(saveRequestDto.getLoginId(), saveRequestDto.getPassword());
+            assertThat(saveMember).isNull();
+        }
+        catch (Exception e){
+            throw new RuntimeException(e);
+        }
+
     }
 
 
@@ -98,7 +128,15 @@ class LoginServiceTest {
                 .password("1234")
                 .build();
 
-        Member saveMember = loginService.login(saveRequestDto.getLoginId(), saveRequestDto.getPassword());
-        assertThat(saveMember).isNull();
+
+        try {
+            Member saveMember = loginService.login(saveRequestDto.getLoginId(), saveRequestDto.getPassword());
+            assertThat(saveMember).isEqualTo(null);
+        }
+
+        catch (Exception e){
+            org.junit.jupiter.api.Assertions.assertEquals("No value present", e.getMessage());
+        }
+
     }
 }

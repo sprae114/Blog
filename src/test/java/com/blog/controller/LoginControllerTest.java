@@ -2,6 +2,7 @@ package com.blog.controller;
 
 import com.blog.domain.Board;
 import com.blog.domain.Member;
+import com.blog.dto.member.MemberSaveRequestDto;
 import com.blog.repository.MemberRepository;
 import com.blog.service.LoginService;
 import org.assertj.core.api.Assertions;
@@ -15,6 +16,8 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
+
+import java.nio.charset.StandardCharsets;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
@@ -39,8 +42,13 @@ class LoginControllerTest {
 
     @BeforeEach
     void beforeEach() {
-        Member member = new Member("abcd1234", "홍길동", "qwer1234");
-        memberRepository.save(member);
+        MemberSaveRequestDto member = new MemberSaveRequestDto("abcd1234", "홍길동", "qwer1234");
+        try {
+            loginService.save(member);
+        }
+        catch (Exception e){
+            new RuntimeException(e);
+        }
     }
 
     @AfterEach
@@ -51,15 +59,19 @@ class LoginControllerTest {
     @DisplayName("로그인 처리 - 성공")
     @Test
     void login() throws Exception{
-        mockMvc.perform(post("/login")
-                        .param("loginId", "abcd1234")
-                        .param("password", "qwer1234"))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(view().name("redirect:/"));
+        String loginId = "abcd1234";
+        String loginPassword = "qwer1234";
 
-        Member saveMember = memberRepository.findByLoginId("abcd1234").get();
+        String hashingPassword = loginService.get_password(loginId,
+                loginPassword.getBytes(StandardCharsets.UTF_8));
+
+        mockMvc.perform(post("/login")
+                        .param("loginId", loginId)
+                        .param("password", hashingPassword));
+
+        Member saveMember = memberRepository.findByLoginId(loginId).get();
         assertNotNull(saveMember);
-        assertEquals(saveMember.getPassword(), "qwer1234");
+        assertEquals(saveMember.getPassword(), hashingPassword);
     }
 
     @DisplayName("로그인 처리 - 실패 : 아이디가 없는경우")
@@ -103,7 +115,11 @@ class LoginControllerTest {
         Member saveMember = memberRepository.findByLoginId("abcd12345").get();
         assertEquals(saveMember.getLoginId(), "abcd12345");
         assertEquals(saveMember.getName(), "김철수");
-        assertEquals(saveMember.getPassword(), "rewq1234");
+
+        String hashingPassword = loginService.get_password("abcd12345",
+                "rewq1234".getBytes(StandardCharsets.UTF_8));
+
+        assertEquals(saveMember.getPassword(), hashingPassword);
     }
 
 
