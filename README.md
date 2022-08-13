@@ -5,11 +5,15 @@
 CRUD, Restful, JPA 등 그동안 배웠던 지식들을 활용하여 이용하는 댓글을 쓸수 있는 게시판 프로젝트를 만들고자 하였다.
 
 **📌프로젝트 진행기간  :**  22.07.30 ~ 08.11 (12일간)
+
+
 ![일정](https://user-images.githubusercontent.com/52237184/184475629-d6b6a7aa-226d-46b0-93a7-b7b99474cc9e.png)
 
 **📌개발인원 : 1명 (개인프로젝트)**
 
 **📌기술스택**
+
+
 ![기술스택](https://user-images.githubusercontent.com/52237184/184475536-fedf763f-9c4f-4cc1-b05b-7f9636370aae.JPG)
 
 
@@ -31,9 +35,12 @@ CRUD, Restful, JPA 등 그동안 배웠던 지식들을 활용하여 이용하�
 ![erd](https://user-images.githubusercontent.com/52237184/184475428-22f8c346-2dd7-482b-9f33-2148abfbc471.jpg)
 
 ## 3)스토리 보드
+
+
 ![스토리보드](https://user-images.githubusercontent.com/52237184/184475627-9049d497-7ed2-4417-b9b4-7179cbee06c9.jpg)
 
 ## 4)기술명세서
+
 
 ![기술명세서](https://user-images.githubusercontent.com/52237184/184475507-5f53ad3e-03f7-4796-a2c5-f9b4fffe19b6.png)
 
@@ -114,6 +121,7 @@ CRUD, Restful, JPA 등 그동안 배웠던 지식들을 활용하여 이용하�
 - 아이디는 타 사용자의 아이디와 중복될 수 없습니다.
 - 아이디는 영어와 숫자로 이뤄진 문자로만, 이름은 한글로만 사용할 수 있습니다.
 
+
 ![회원가입](https://user-images.githubusercontent.com/52237184/184475662-0a3b2823-c9bf-4cb3-bc9e-380dd94079cd.gif)
     
 
@@ -122,6 +130,7 @@ CRUD, Restful, JPA 등 그동안 배웠던 지식들을 활용하여 이용하�
 - session을 통한 로그인 기능을 구현하였습니다.
 - 회원 정보일치여부를 확인 합니다.
     
+ 
  ![로그인](https://user-images.githubusercontent.com/52237184/184475658-e3762f51-0d13-4661-bc88-82e4449ea50f.gif)
     
 
@@ -130,6 +139,7 @@ CRUD, Restful, JPA 등 그동안 배웠던 지식들을 활용하여 이용하�
 - 원하는 게시물의 제목을 찾을 수 있습니다.
 - 다음페이지를 넘겨도 검색 결과가 유지됩니다.
     
+ 
  ![검색](https://user-images.githubusercontent.com/52237184/184475651-68eeff12-0c0d-44b3-9793-f3101496b4f0.gif)   
 
 ## 4) 페이징
@@ -137,6 +147,7 @@ CRUD, Restful, JPA 등 그동안 배웠던 지식들을 활용하여 이용하�
 - 페이징 처리를 통해 5개 이상이 넘어는 게시물은 다음 페이지에 볼수 있도록 하였습니다.
 - 현재 페이지는 클릭할 수 없습니다.
     
+
 ![페이징](https://user-images.githubusercontent.com/52237184/184475659-e75e775f-b454-42cd-8613-5156e8627c36.gif)
     
 
@@ -146,7 +157,10 @@ CRUD, Restful, JPA 등 그동안 배웠던 지식들을 활용하여 이용하�
 - 게시물 검증을 통해 게시물을 등록하지 못하게 했습니다.
 - 게시물을 CRUD할 수 있습니다.
     
+
 ![게시글 등록 검증](https://user-images.githubusercontent.com/52237184/184475653-296f203c-f6c4-460f-975d-22440caa7422.gif)
+
+
 
 ![게시글 수정 및 삭제](https://user-images.githubusercontent.com/52237184/184475655-a0304d42-b71a-4872-ada1-39333ef8c15a.gif)  
     
@@ -158,9 +172,12 @@ CRUD, Restful, JPA 등 그동안 배웠던 지식들을 활용하여 이용하�
 - 댓글의 등록, 삭제 기능을 추가하였습니다.
 - 게시물이 삭제되면 관련된 댓글도 사라집니다.
     
+
 ![댓글](https://user-images.githubusercontent.com/52237184/184475656-b5426fb8-35ac-48cd-b01c-1a55a514ac28.gif)    
 
 ## 7) 미로그인 상태
 
 - 미 로그인 상태에서는 글 등록/수정/삭제를 할수 없습니다
+
+
 ![게시글 로그인 상태만 등록 수정 및 삭제 댓글 가능](https://user-images.githubusercontent.com/52237184/184475654-c4dc7734-d80a-4c02-a882-4ba9c488c372.gif)
