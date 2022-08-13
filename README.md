@@ -32,7 +32,7 @@ CRUD, Restful, JPA 등 그동안 배웠던 지식들을 활용하여 이용하�
 
 ## 2)ERD
 
-![erd](https://user-images.githubusercontent.com/52237184/184475428-22f8c346-2dd7-482b-9f33-2148abfbc471.jpg)
+![image](https://user-images.githubusercontent.com/52237184/184476394-7bc6a35e-300d-45e1-81c9-e736b662f9ba.png)
 
 ## 3)스토리 보드
 
