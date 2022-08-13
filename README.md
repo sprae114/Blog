@@ -20,6 +20,7 @@ CRUD, Restful, JPA 등 그동안 배웠던 지식들을 활용하여 이용하�
 ## 1)환경 세팅하기
 
 **h2**
+
 ![h2](https://user-images.githubusercontent.com/52237184/184475482-1179c431-7206-4054-981a-1689aab04b02.jpg)
 
 **접속**           [`http://localhost:8086`](http://localhost:8086/)
